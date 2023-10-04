@@ -61,35 +61,34 @@ EOF
 }
 
 function run_in_container {
-  dir="$(pwd)"
-  cd
-  install_tools
-  cd "$dir"
-  create_app "$app"
+    dir="$(pwd)"
+    cd
+    install_tools
+    cd "$dir"
+    create_app "$app"
 }
 
 function run_on_host {
-  if [[ -z "$app" ]]; then
-    echo "No app name" >&2
-    exit 1
-  fi
-  if [[ -d "$app" ]]; then
-    echo "Directory $dir already exists"
-    exit 1
-  fi
-  dir="$(pwd)"
+    if [[ -z "$app" ]]; then
+        echo "No app name" >&2
+        exit 1
+    fi
+    if [[ -d "$app" ]]; then
+        echo "Directory $dir already exists"
+        exit 1
+    fi
+    dir="$(pwd)"
 
-  docker run --rm -it \
-    --user node \
-    --volume $(pwd):/home/node/proj \
-    --workdir=/home/node/proj \
-    node /home/node/proj/react-project.sh "$app"
+    docker run --rm -it \
+        --user node \
+        --volume $(pwd):/home/node/proj \
+        --workdir=/home/node/proj \
+        node /home/node/proj/react-project.sh "$app"
 }
 
 app="$1"
-export app
 if command -v docker; then
-  run_on_host
+    run_on_host
 else
-  run_in_container
+    run_in_container
 fi
